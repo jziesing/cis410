@@ -41,6 +41,9 @@ class Ploop {
 				int notfound = 1;
 				genpass(currpass,passmatch);
 				notfound = test(argv, passmatch);
+				if(notfound == 0) {
+					printf("found: %s\n", passmatch);
+				}
 				currpass++;	
 			}
 		}
