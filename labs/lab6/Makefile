@@ -9,7 +9,7 @@ crypto_tbb: crypto_tbb.cpp key.c
 	icpc -o crypto_tbb crypto_tbb.cpp key.c -ltbb
 
 crypto_cilk: crypto_cilk.cpp key.c
-	icpc -o crypto_cilk crypto_cilk.c key.c -lcilkrts
+	icpc -o crypto_cilk crypto_cilk.cpp key.c -lcilkrts
 
 crypto_serial: serial.c key.c
 	icc -std=c99 -o crypto_serial serial.c key.c

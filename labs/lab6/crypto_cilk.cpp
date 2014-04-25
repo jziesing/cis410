@@ -8,7 +8,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <cilk/cilk.h>
-//#include <cilk/reducer_opxor.h>
+#include <cilk/reducer_opxor.h>
 // utility function: given a list of keys, a list of files to pull them from, 
 // and the number of keys -> pull the keys out of the files, allocating memory 
 // as needed
@@ -22,18 +22,19 @@ void getKeys(xorKey* keyList, char** fileList, int numKeys)
 }
 //Given text, a list of keys, the length of the text, and the number of keys, encodes the text
 void encode(char* plainText, char* cypherText, xorKey* keyList, int ptextlen, int numKeys) {
-  int keyLoop=0;
+  //int keyLoop=0;
   int charLoop=0;
   //cilk::reducer_opxor<char> ;
   cilk_for(charLoop=0;charLoop<ptextlen;charLoop++) {
   	//char cipherChar=plainText[charLoop]; 
-  	cilk::reducer_opxor<char> cipherChar(plainText[charLoop]);
+  	int keyLoop;
+	cilk::reducer_opxor<char> cipherChar(plainText[charLoop]);
 	cilk_for(keyLoop=0;keyLoop<numKeys;keyLoop++) {
   		cipherChar=cipherChar ^ getBit(&(keyList[keyLoop]),charLoop);
 		//resul = resul ^ getBit(&(keyList[keyLoop]),charLoop);
   	}
 	
-    cypherText[charLoop]=cipherChar;
+    cypherText[charLoop]=cipherChar.get_value();
   }
 }
 
