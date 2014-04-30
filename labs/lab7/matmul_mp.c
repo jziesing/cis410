@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <omp.h>
 
-#define ORDER 5000   // the order of the matrix
+#define ORDER 1000   // the order of the matrix
 #define AVAL  3.0    // initial value of A
 #define BVAL  5.0    // initial value of B
 #define TOL   0.001  // tolerance used to check the result
@@ -23,11 +23,9 @@
 #define M ORDER
 
 double A[N][P];
-double Aa[N][P];
-double B[P][M];
-double Bb[P][M];
+double B[M][P];
 double C[N][M];
-double Cc[N][M];
+double Tmp[P][M];
 double i1[N][P];
 double i2[P][M];
 double i3[N][M];
@@ -43,10 +41,16 @@ void matrix_init(void) {
 		}
 	}
 
-	// B[P][M] -- Matrix B
+	// Tmp[P][M] -- Matrix Tmp
 	for (i=0; i<P; i++) {
 		for (j=0; j<M; j++) {
-			B[i][j] = BVAL;
+			Tmp[i][j] = BVAL;
+		}
+	}
+	
+	for (i=0; i<P; i++) {
+		for(j=0; j<M; j++) {
+			B[j][i] = Tmp[i][j];
 		}
 	}
 
