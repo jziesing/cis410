@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
-
+#include <cilk/cilk.h>
 using namespace cv;
 
 #include "starhole_common.cpp"
@@ -36,20 +36,20 @@ int walker(long int seed, int x, int y, int stepsremaining) {
 		//#pragma omp task shared(seedbuf) firstprivate(new
             long int newseed;
             lrand48_r(&seedbuf, &newseed);
-		#pragma omp task firstprivate(newseed) shared(particles)
-		{
-            particles += walker(seed + newseed, x, y, stepsremaining-1);
-		}
+	//	cilk_spawn {	
+        	 particles += walker(seed + newseed, x, y, stepsremaining-1);
+	//	}
         }
-        //#pragma omp taskwait
+       
         // Make the particle walk?
-	//#pragma omp taskwait
+
         updateLocation(&seedbuf, area, &x, &y, radius);
     }
     
     // record the final location
     outArea[toOffset(x,y,radius)] += 1;
-    #pragma omp taskwait
+   // #pragma omp taskwait
+   cilk_sync;
     return particles;
 }
 
